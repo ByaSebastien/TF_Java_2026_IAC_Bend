@@ -22,12 +22,16 @@ jobs:
       - name: Build
         run: mvn -B clean package -DskipTests
       - name: Publish
-        run: mkdir -p publish && cp target/*.jar publish/
+        run: |
+          mkdir -p publish
+          JAR_PATH=$(find target -maxdepth 1 -type f -name "*.jar" ! -name "*.jar.original" | head -n 1)
+          test -n "$JAR_PATH"
+          cp "$JAR_PATH" publish/app.jar
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
           name: spring-boot-artifact
-          path: ./publish
+          path: ./publish/app.jar
 
   deploy:
     needs: build
@@ -46,4 +50,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'tf-java-2026-web-app'
-          package: './publish/*.jar'
+          package: './publish/app.jar'
