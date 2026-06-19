@@ -20,7 +20,7 @@ jobs:
           java-version: '21'
           cache: maven
       - name: Build
-        run: ./mvnw -B clean package -DskipTests
+        run: mvn -B clean package -DskipTests
       - name: Publish
         run: mkdir -p publish && cp target/*.jar publish/
       - name: Upload artifact
